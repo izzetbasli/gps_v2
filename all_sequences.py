@@ -16,6 +16,21 @@ class AllSequence:
         self.sequences = []
         self.information['Information']['anomaly_sequences'] = []
 
+
+    def all_to_one_list(self, distrubution):
+        """
+        appends result to one list
+        :param info:
+        :param distrubution:
+        :return:
+        """
+        united_sequences = []
+        for sequences in distrubution:
+            for seq in sequences:
+                if type(seq) == dict:
+                    united_sequences.append(seq)
+        return united_sequences
+
     def create_json(self):
         results = []
 
@@ -32,7 +47,8 @@ class AllSequence:
                 result = process.lower_sequence()
                 self.information['Information']['anomaly_sequences'].append(sequence[0]['SequenceUUID'])
             results.append(result)
-            results.append(self.information)
+        results = self.all_to_one_list(results)
+        results.append(self.information)
         return results
 
 
@@ -41,4 +57,6 @@ with open('/home/izzet/Downloads/3_1_2022_pendik.json') as fp:
 
 all = AllSequence(descs)
 final = all.create_json()
-print(final)
+
+with open("/home/izzet/Desktop/projects/plot-anomaly-mapilio/gpsv2.json", "w") as outfile:
+    outfile.write(json.dumps(final, indent=4))
